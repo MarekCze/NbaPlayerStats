@@ -1,0 +1,49 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 01-Nov-2020, 14:08:51
+    Author     : marek
+*/
+
+body{
+    background-color: #d7d4cf;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1{
+    text-align: center;
+}
+
+.showPosts, .showUsers{
+    width: 70%;
+    height: 400px;
+    margin: auto;
+    background-color: #f2f2f1;  
+    overflow: scroll;
+    display: none;
+    padding: 20px;
+}
+
+.getPostsDiv, .getUsersDiv{
+    width: 400px;
+    margin: auto;
+}
+
+.getPostsDiv h2{
+    text-align: center;
+}
+
+#createPlayerForm, #createUserForm{
+    width: 70%;
+    border: solid 1px black;
+    display: none;
+}
+
+.createPostDiv, .createUserDiv{
+    width: 70%;
+    margin: auto;
+    padding: 20px;
+}
