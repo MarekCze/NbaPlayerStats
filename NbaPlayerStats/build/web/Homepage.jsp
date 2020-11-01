@@ -64,11 +64,17 @@
                     <input type="text" name="username" id="username">
                     <br>
                 </label>
-                <label for="userDescription">User description:
+                <label for="password"> Password:
                     <br>
-                    <input type="text" name="userDescription" id="userDescription">
+                    <input type="text" name="password" id="password">
                     <br>
                 </label>
+                <label for="email">User email:
+                    <br>
+                    <input type="text" name="email" id="email">
+                    <br>
+                </label>
+                <input type="button" value="createUser" id="createUser">
             </form>
         </div>
         
@@ -138,19 +144,20 @@
               $('#createUser').click(function(){
                   const menu = $('#createUser').val();
                   const name = $('#username').val();
-                  const description = $('#userDescription').val();
+                  const password = $('#password').val();
+                  const email = $('#email').val();
                   $.ajax({
                       type:'POST',
                       data:{
                           menu: menu,
                           username: name,
-                          description: description
+                          password: password,
+                          email: email
                       },
                       url:'WordpressController',
                       success: function(result){
-                          const resObj = JSON.parse(result);
                           // message indicating success/failure of POST request
-                          alert(resObj.message);
+                          alert(result);
                       }
                   });
               });

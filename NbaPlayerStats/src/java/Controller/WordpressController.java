@@ -50,12 +50,13 @@ public class WordpressController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     
+    private final String wpUrl = "http://localhost:8082/NBAPlayerStats/wp-json/wp/v2/";
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
-        
         String menu = request.getParameter("menu");
-        
+        int statusCode = 0;
         
         
         switch(menu){
@@ -72,7 +73,7 @@ public class WordpressController extends HttpServlet {
                 session.setAttribute("users", users);
                 break;
             case "createPost":
-                int statusCode = createPost(session, request, response);
+                statusCode = createPost(session, request, response);
                 System.out.println("STATUS CODE IS " + statusCode);
                 if(statusCode == 201){
                     String message = "New post created successfully";
@@ -81,12 +82,30 @@ public class WordpressController extends HttpServlet {
                     writer.flush();
                     writer.close();
                 } else {
-                    sendJsonToClient(response, "Something went wrong");
+                    String message = "Something went wrong";
+                    PrintWriter writer = response.getWriter();
+                    writer.write(message);
+                    writer.flush();
+                    writer.close();
                 }
                 
                 break;
             case "createUser":
-                createUser(session, request, response);
+                statusCode = createUser(session, request, response);
+                System.out.println("STATUS CODE IS " + statusCode);
+                if(statusCode == 201){
+                    String message = "New user created successfully";
+                    PrintWriter writer = response.getWriter();
+                    writer.write(message);
+                    writer.flush();
+                    writer.close();
+                } else {
+                    String message = "Something went wrong";
+                    PrintWriter writer = response.getWriter();
+                    writer.write(message);
+                    writer.flush();
+                    writer.close();
+                }
                 break;
         }
         
@@ -114,7 +133,7 @@ public class WordpressController extends HttpServlet {
     }
     
     private List<Player> getAllPlayers(HttpSession session, HttpServletRequest request, HttpServletResponse response){
-        final String urlString = "http://localhost:8082/NBAPlayerStats/wp-json/wp/v2/posts";
+        final String urlString = this.getWpUrl() + "posts";
         List<Player> players = new ArrayList();
         
         try {
@@ -154,7 +173,7 @@ public class WordpressController extends HttpServlet {
     }
     
     private List<User> getAllUsers(HttpSession session, HttpServletRequest request, HttpServletResponse response){
-        final String urlString = "http://localhost:8082/NBAPlayerStats/wp-json/wp/v2/users";
+        final String urlString = this.getWpUrl() + "users";
         List<User> users = new ArrayList();
         
         try {
@@ -190,7 +209,7 @@ public class WordpressController extends HttpServlet {
     }
     
     private int createPost(HttpSession session, HttpServletRequest request, HttpServletResponse response){
-        final String urlString = "http://localhost:8082/NBAPlayerStats/wp-json/wp/v2/posts";
+        final String urlString = this.getWpUrl() + "posts";
         int statusCode = 0;
         try {
 
@@ -229,7 +248,6 @@ public class WordpressController extends HttpServlet {
             wr.close();
             
             statusCode = urlConnection.getResponseCode();
-            //System.out.println("RESPONSE CODE:: " + statusCode);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -240,9 +258,9 @@ public class WordpressController extends HttpServlet {
         return statusCode;
     }
     
-        private void createUser(HttpSession session, HttpServletRequest request, HttpServletResponse response){
-        final String urlString = "http://localhost:8082/NBAPlayerStats/wp-json/wp/v2/posts";
-        
+        private int createUser(HttpSession session, HttpServletRequest request, HttpServletResponse response){
+        final String urlString = this.getWpUrl() + "users";
+        int statusCode = 0;
         try {
 
             URL url = new URL(urlString);
@@ -257,12 +275,17 @@ public class WordpressController extends HttpServlet {
             urlConnection.setRequestProperty("Authorization", encodedCredentials);
             urlConnection.setRequestProperty("Accept", "application/json");
             urlConnection.setRequestMethod("POST");
+            
+            // get request parameters
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+            String email = request.getParameter("email");
 
             // create Player object which will be converted to json
-            Player p = new Player("Alex Carushow","sample description description","publish");
+            User u = new User(username,password,email);
             // convert Player object to json
             Gson gson = new Gson();
-            String data = gson.toJson(p);
+            String data = gson.toJson(u);
             System.out.println(data);
             
             // create writer & reader
@@ -275,14 +298,14 @@ public class WordpressController extends HttpServlet {
             wr.flush();
             wr.close();
             
-            int status = urlConnection.getResponseCode();
-            System.out.println("RESPONSE CODE:: " + status);
+            statusCode = urlConnection.getResponseCode();
 
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("error" + e.toString());
 
         }
+        return statusCode;
     }
     
     private String encodeCredentials(String username, String password){
@@ -329,5 +352,12 @@ public class WordpressController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    /**
+     * @return the wpUrl
+     */
+    public String getWpUrl() {
+        return wpUrl;
+    }
 
 }

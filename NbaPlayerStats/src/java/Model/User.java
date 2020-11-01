@@ -13,16 +13,23 @@ import com.google.gson.annotations.SerializedName;
  */
 public class User {   
     private Integer id;
-    @SerializedName(value= "name")
+    @SerializedName(value= "username",alternate="name")
     private String username;
-    private String description;
+    private String password;
+    private String email;
     
     public User(){}
     
-    public User(int id, String username, String description){
+    public User(int id, String username, String email){
         this.id = id;
         this.username = username;
-        this.description = description;
+        this.email = email;
+    }
+    
+    public User(String username, String password, String email){       
+        this.username = username;
+        this.password = password;
+        this.email = email;
     }
 
     /**
@@ -56,19 +63,33 @@ public class User {
     /**
      * @return the description
      */
-    public String getDescription() {
-        return description;
+    public String getEmail() {
+        return email;
     }
 
     /**
      * @param description the description to set
      */
-    public void setDescription(String description) {
-        this.description = description;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
     
     @Override
     public String toString(){
-        return "\nUser ID: " + this.getId() + "\nUsername: " + this.getUsername() + "\nUser description: " + this.getDescription();
+        return "\nUser ID: " + this.getId() + "\nUsername: " + this.getUsername() + "\nPassword: " + this.getPassword() + "\nUser email: " + this.getEmail();
     }
 }
