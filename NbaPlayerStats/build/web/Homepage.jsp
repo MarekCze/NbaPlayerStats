@@ -16,7 +16,7 @@
     <body>
         <h1>Wordpress API Showcase</h1>
         <div class="getPostsDiv">
-            <h2>Get Posts</h2>
+            <h2>Get All Posts</h2>
             <form method="get" action="WordpressController">
                 <input type="button" value="getPosts" id="getPosts">
             </form>
@@ -26,7 +26,7 @@
         </div>
         
         <div class="getUsersDiv">
-            <h2>Get Users</h2>
+            <h2>Get All Users</h2>
             <form method="get" action="WordpressController">
                 <input type="button" value="getUsers" id="getUsers">
             </form>
@@ -54,6 +54,45 @@
             </form>
         </div>
         
+        <div class="updatePostDiv">
+            <h2>Update Post</h2>
+            <button class="updatePostBtn" value="show">Show</button>
+            <button class="updatePostBtn" value="hide">Hide</button>
+            <form id="updatePlayerForm" method="put" action="WordpressController">
+                <label for="playerId">Player id:
+                    <br>
+                    <input type="text" name="playerId" id="playerIdUpdate">
+                    <br>
+                </label>
+                <label for="playerName">Player name:
+                    <br>
+                    <input type="text" name="playerName" id="playerName">
+                    <br>
+                </label>
+                <label for="playerDescription">Player description:
+                    <br>
+                    <input type="text" name="playerDescription" id="playerDescription">
+                    <br>
+                </label>
+                <input type="submit" name="menu" value="updatePost" id="updatePost">
+            </form>
+        </div>
+        
+        <div class="deletePostDiv">
+            <h2>Delete Post</h2>
+            <button class="deletePostBtn" value="show">Show</button>
+            <button class="deletePostBtn" value="hide">Hide</button>
+            <form id="deletePlayerForm" method="delete" action="WordpressController">
+                <label for="playerId">Player id:
+                    <br>
+                    <input type="text" name="playerId" id="playerIdDelete">
+                    <br>
+                </label>
+                <input type="submit" name="menu" value="deletePost" id="deletePost">
+            </form>
+        </div>
+        
+        
         <div class="createUserDiv">
             <h2>Create User</h2>
             <button class="createUserBtn" value="show">Show</button>
@@ -79,9 +118,10 @@
         </div>
         
         <script>
-            $(document).ready(function(){
+            $(document).ready(function(){            
               // Get all posts  
               $('#getPosts').click(function(){
+                  $('#allPosts').empty();
                   const menu = $('#getPosts').val();
                   $.ajax({
                       type:'GET',
@@ -101,6 +141,7 @@
               });
               // Get all users
               $('#getUsers').click(function(){
+                  $('#allUsers').empty();
                   const menu = $('#getUsers').val();
                   $.ajax({
                       type:'GET',
@@ -111,7 +152,7 @@
                           //console.log(resObj);
                           $('.showUsers').show();
                           resObj.forEach(function(user){
-                              let content = '<p>User id: ' + user.id + '</p>' + '<p>Username: ' + user.name + '</p>'
+                              let content = '<p>User id: ' + user.id + '</p>' + '<p>Username: ' + user.username + '</p>'
                                     + '<p>User description: ' + user.content + '</p>';
                               
                               $('#allUsers').append(content);
@@ -172,6 +213,20 @@
                               $('#createPlayerForm').show();
                           } else {
                               $('#createPlayerForm').hide();
+                          }
+                          break;
+                      case 'updatePostBtn':
+                          if(event.target.value === 'show'){
+                              $('#updatePlayerForm').show();
+                          } else {
+                              $('#updatePlayerForm').hide();
+                          }
+                          break;
+                      case 'deletePostBtn':
+                          if(event.target.value === 'show'){
+                              $('#deletePlayerForm').show();
+                          } else {
+                              $('#deletePlayerForm').hide();
                           }
                           break;
                       case 'createUserBtn':

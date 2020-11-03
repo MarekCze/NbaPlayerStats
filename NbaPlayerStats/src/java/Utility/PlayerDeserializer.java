@@ -21,6 +21,8 @@ import java.util.List;
  *
  * @author marek
  */
+
+// Custom GSON deserializer that generates Player objects from JSON tree
 public class PlayerDeserializer implements JsonDeserializer<List<Player>>{
 
     @Override

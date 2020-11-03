@@ -25,6 +25,7 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -58,7 +59,6 @@ public class WordpressController extends HttpServlet {
         String menu = request.getParameter("menu");
         int statusCode = 0;
         
-        
         switch(menu){
             case "getPosts":
                 List<Player> players = new ArrayList();
@@ -89,6 +89,17 @@ public class WordpressController extends HttpServlet {
                     writer.close();
                 }
                 
+                break;               
+            case "updatePost":
+                statusCode = updatePost(session, request, response);
+                System.out.println("STATUS CODE IS " + statusCode);
+                gotoPage("/Homepage.jsp", request, response);          
+                break;
+            case "deletePost":
+                System.out.println("INSIDE DELETE POST CASE");
+                statusCode = deletePost(session, request, response);
+                System.out.println("STATUS CODE IS " + statusCode);
+                gotoPage("/Homepage.jsp", request, response);         
                 break;
             case "createUser":
                 statusCode = createUser(session, request, response);
@@ -111,27 +122,22 @@ public class WordpressController extends HttpServlet {
         
     }
     
+    // SEND JSON RESPONSE BACK TO AJAX CALLBACK
     private <T> void sendJsonToClient(HttpServletResponse response, List<T> list) throws IOException{
         Gson gson = new Gson();
+        // get type of object to convert to JSON
         Type type = new TypeToken<List<T>>(){}.getType();
+        // convert to JSON
         String json = gson.toJson(list, type);
         
+        // send to AJAX
         PrintWriter writer = response.getWriter();
         writer.write(json);
         writer.flush();
         writer.close();
     }
     
-    private void sendJsonToClient(HttpServletResponse response, String message) throws IOException{
-        Gson gson = new Gson();
-        String json = gson.toJson(message, String.class);
-        System.out.println(json);
-        PrintWriter writer = response.getWriter();
-        writer.write(json);
-        writer.flush();
-        writer.close();
-    }
-    
+    // GET ALL PLAYERS
     private List<Player> getAllPlayers(HttpSession session, HttpServletRequest request, HttpServletResponse response){
         final String urlString = this.getWpUrl() + "posts";
         List<Player> players = new ArrayList();
@@ -154,7 +160,7 @@ public class WordpressController extends HttpServlet {
             gsonBuilder.registerTypeAdapter(type, new PlayerDeserializer());
             // create gson instance
             Gson gson = gsonBuilder.create();
-            // deserialize json response to list of Player objects
+            // deserialize JSON response to list of Player objects
             players = gson.fromJson(reader, type);
             
             for(Player p : players){
@@ -172,6 +178,7 @@ public class WordpressController extends HttpServlet {
         return players;
     }
     
+    // GET ALL USERS
     private List<User> getAllUsers(HttpSession session, HttpServletRequest request, HttpServletResponse response){
         final String urlString = this.getWpUrl() + "users";
         List<User> users = new ArrayList();
@@ -193,7 +200,7 @@ public class WordpressController extends HttpServlet {
             Type type = new TypeToken<List<User>>(){}.getType();
             // create gson instance
             Gson gson = new Gson();
-            // deserialize json response to list of Player objects
+            // deserialize JSON response to list of Player objects
             users = gson.fromJson(reader, type);
 
             for(User u : users){
@@ -208,6 +215,7 @@ public class WordpressController extends HttpServlet {
         return users;
     }
     
+    // CREATE POST
     private int createPost(HttpSession session, HttpServletRequest request, HttpServletResponse response){
         final String urlString = this.getWpUrl() + "posts";
         int statusCode = 0;
@@ -258,7 +266,89 @@ public class WordpressController extends HttpServlet {
         return statusCode;
     }
     
-        private int createUser(HttpSession session, HttpServletRequest request, HttpServletResponse response){
+    // UPDATE POST
+    private int updatePost(HttpSession session, HttpServletRequest request, HttpServletResponse response){
+        final String urlString = this.getWpUrl() + "posts/" + request.getParameter("playerId");
+        int statusCode = 0;
+        try {
+
+            URL url = new URL(urlString);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            
+            // encode basic auth credentials
+            String encodedCredentials = encodeCredentials("marek", "YROE)udD^FLO2DL9Ku");
+            System.out.println(encodedCredentials);
+            
+            urlConnection.setDoOutput(true);
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setRequestProperty("Authorization", encodedCredentials);
+            urlConnection.setRequestProperty("Accept", "application/json");
+            urlConnection.setRequestMethod("PUT");
+
+            // get request parameters
+            String name = request.getParameter("playerName");
+            String description = request.getParameter("playerDescription");
+            
+            // create Player object which will be converted to json
+            Player p = new Player(name, description, "publish");
+            // convert Player object to json
+            Gson gson = new Gson();
+            String data = gson.toJson(p);
+            System.out.println(data);
+            
+            // create writer & reader
+            OutputStream outputStream = urlConnection.getOutputStream();
+            BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+            //OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
+            
+            // write data to API
+            wr.write(data);
+            wr.flush();
+            wr.close();
+            
+            statusCode = urlConnection.getResponseCode();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("error" + e.toString());
+
+        }
+        
+        return statusCode;
+    }
+    
+    // DELETE POST
+    private int deletePost(HttpSession session, HttpServletRequest request, HttpServletResponse response){
+        final String urlString = this.getWpUrl() + "posts/" + request.getParameter("playerId");
+        int statusCode = 0;
+        try {
+
+            URL url = new URL(urlString);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            
+            // encode basic auth credentials
+            String encodedCredentials = encodeCredentials("marek", "YROE)udD^FLO2DL9Ku");
+            System.out.println(encodedCredentials);
+            
+            urlConnection.setDoOutput(true);
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setRequestProperty("Authorization", encodedCredentials);
+            urlConnection.setRequestProperty("Accept", "application/json");
+            urlConnection.setRequestMethod("DELETE");
+            
+            statusCode = urlConnection.getResponseCode();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("error" + e.toString());
+
+        }
+        
+        return statusCode;
+    }
+    
+    // CREATE USER
+    private int createUser(HttpSession session, HttpServletRequest request, HttpServletResponse response){
         final String urlString = this.getWpUrl() + "users";
         int statusCode = 0;
         try {
@@ -358,6 +448,15 @@ public class WordpressController extends HttpServlet {
      */
     public String getWpUrl() {
         return wpUrl;
+    }
+    
+    private void gotoPage(String url,
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+        RequestDispatcher dispatcher
+                = getServletContext().getRequestDispatcher(url);
+        dispatcher.forward(request, response);
     }
 
 }

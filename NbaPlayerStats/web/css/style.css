@@ -9,25 +9,24 @@ and open the template in the editor.
 */
 
 body{
-    background-color: #d7d4cf;
+    background-color: white;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-h1{
+h1, h2{
     text-align: center;
 }
 
 .showPosts, .showUsers{
     width: 70%;
     height: 400px;
-    margin: auto;
-    background-color: #f2f2f1;  
+    margin: auto; 
     overflow: scroll;
     display: none;
     padding: 20px;
 }
 
-.getPostsDiv, .getUsersDiv{
+.getPostsDiv, .getUsersDiv, .updatePostDiv, .deletePostDiv{
     width: 400px;
     margin: auto;
 }
@@ -36,14 +35,17 @@ h1{
     text-align: center;
 }
 
-#createPlayerForm, #createUserForm{
+#createPlayerForm, #createUserForm, #updatePlayerForm, #deletePlayerForm{
     width: 70%;
     border: solid 1px black;
     display: none;
+    margin: auto;
+    background-color: white;
 }
 
 .createPostDiv, .createUserDiv{
     width: 70%;
     margin: auto;
     padding: 20px;
+    background-color: grey;
 }
