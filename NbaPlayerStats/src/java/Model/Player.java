@@ -6,6 +6,7 @@
 package Model;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.List;
 
 /**
  *
@@ -19,6 +20,8 @@ public class Player {
     private String description;
     private String link;
     private String status;
+    private List<PlayerStats> playerStats;
+    private List<PlayerStats> lastFiveGames;
     
     public Player(){}
     
@@ -91,12 +94,6 @@ public class Player {
     public void setLink(String link) {
         this.link = link;
     }
-    
-    @Override
-    public String toString(){
-        return "\nPlayer id: " + this.getId() + "\nPlayer name: " + this.getName() + "\nPlayer description:\n " + this.getDescription()
-                + "\nPost link: " + this.getLink() + "\nPost status: " + this.getStatus();
-    }
 
     /**
      * @return the status
@@ -110,5 +107,45 @@ public class Player {
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    /**
+     * @return the playerStats
+     */
+    public List<PlayerStats> getPlayerStats() {
+        return playerStats;
+    }
+
+    /**
+     * @param playerStats the playerStats to set
+     */
+    public void setPlayerStats(List<PlayerStats> playerStats) {
+        this.playerStats = playerStats;
+    }
+
+    /**
+     * @return the lastFiveGames
+     */
+    public List<PlayerStats> getLastFiveGames() {
+        return lastFiveGames;
+    }
+
+    /**
+     * @param lastFiveGames the lastFiveGames to set
+     */
+    public void setLastFiveGames(List<PlayerStats> lastFiveGames) {
+        this.lastFiveGames = lastFiveGames;
+    }
+    
+    @Override
+    public String toString(){
+        return "\nPlayer id: " + this.getId() + "\nPlayer name: " + this.getName() + "\nPlayer description:\n " + this.getDescription()
+                + "\nPost link: " + this.getLink() + "\nPost status: " + this.getStatus();
+    }
+    
+    public void statsToString(){
+        for(PlayerStats ps : lastFiveGames){
+            System.out.println("Blocks: " + ps.getBlocks() + "\tPoints: " + ps.getPoints() + "\tAssists: " + ps.getAssists() + "\tRebounds: " + ps.getTotReb());
+        }
     }
 }

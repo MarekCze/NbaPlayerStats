@@ -162,12 +162,15 @@ public class WordpressController extends HttpServlet {
             Gson gson = gsonBuilder.create();
             // deserialize JSON response to list of Player objects
             players = gson.fromJson(reader, type);
-            
-            for(Player p : players){
+            System.out.println("*****   PLAYER DATA   *****");
+            for(Player p : players){               
                 System.out.println(p.toString());
+                System.out.println("PLAYER STATS");
+                p.statsToString();
             }
             
             reader.close();
+            
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -203,6 +206,7 @@ public class WordpressController extends HttpServlet {
             // deserialize JSON response to list of Player objects
             users = gson.fromJson(reader, type);
 
+            System.out.println("*****   USER DATA   *****");
             for(User u : users){
                 System.out.println(u.toString());
             }
