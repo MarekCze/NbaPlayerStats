@@ -49,3 +49,7 @@ h1, h2{
     padding: 20px;
     background-color: grey;
 }
+
+.statsTable{
+    border: 1px solid black;
+}

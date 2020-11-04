@@ -131,10 +131,55 @@
                           const resObj = JSON.parse(result);
                           //console.log(resObj);
                           $('.showPosts').show();
+                          
                           resObj.forEach(function(player){
-                              let content = '<h2>' + player.title + '</h2>' + player.content;
+                              var table = $("<table></table>");
+                                table.append('<th>Game ID</th>');
+                                table.append('<th>Points</th>');
+                                table.append('<th>Minutes played</th>');
+                                table.append('<th>Field Goals Made</th>');
+                                table.append('<th>Field Goal Attempts</th>');
+                                table.append('<th>Field Goal Percentage</th>');
+                                table.append('<th>Free Throws Made</th>');
+                                table.append('<th>Free Throw Attempts</th>');
+                                table.append('<th>Free Throw Percentage</th>');
+                                table.append('<th>Offensive Rebounds</th>');
+                                table.append('<th>Defensive Rebounds</th>');
+                                table.append('<th>Total Rebounds</th>');
+                                table.append('<th>Assists</th>');
+                                table.append('<th>Fouls</th>');
+                                table.append('<th>Steals</th>');
+                                table.append('<th>Blocks</th>');
+                                table.append('<th>Plus Minus</th>');
+                                
+                              const content = '<h2>' + player.title + '</h2>' + player.content;
+                              const heading = '<h2>Player stats from the last 5 games (From external API)';
+                              player.lastFiveGames.forEach(function(game){
+                                  console.log('inside player stats for each')
+                                  $('<tr>').append(
+                                    $('<td>').text(game.gameId),
+                                    $('<td>').text(game.points),
+                                    $('<td>').text(game.min),
+                                    $('<td>').text(game.fgm),
+                                    $('<td>').text(game.fga),
+                                    $('<td>').text(game.fgp),
+                                    $('<td>').text(game.ftm),
+                                    $('<td>').text(game.fta),
+                                    $('<td>').text(game.ftp),
+                                    $('<td>').text(game.offRed),
+                                    $('<td>').text(game.defReb),
+                                    $('<td>').text(game.totReb),
+                                    $('<td>').text(game.assists),
+                                    $('<td>').text(game.pFouls),
+                                    $('<td>').text(game.steals),
+                                    $('<td>').text(game.blocks),
+                                    $('<td>').text(game.plusMinus),
+                                  ).appendTo(table);
+                              });
                               
                               $('#allPosts').append(content);
+                              $('#allPosts').append(heading);
+                              $('#allPosts').append(table);
                           });
                       }
                   });
