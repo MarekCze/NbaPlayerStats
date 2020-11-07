@@ -162,12 +162,6 @@ public class WordpressController extends HttpServlet {
             Gson gson = gsonBuilder.create();
             // deserialize JSON response to list of Player objects
             players = gson.fromJson(reader, type);
-            System.out.println("*****   PLAYER DATA   *****");
-            for(Player p : players){               
-                System.out.println(p.toString());
-                System.out.println("PLAYER STATS");
-                p.statsToString();
-            }
             
             reader.close();
             
@@ -403,7 +397,7 @@ public class WordpressController extends HttpServlet {
     }
     
     private String encodeCredentials(String username, String password){
-        String s = username + ":" + password;
+        String s =  username + ":" + password;
         
         return "Basic " + Base64.getEncoder().encodeToString(s.getBytes());
     }

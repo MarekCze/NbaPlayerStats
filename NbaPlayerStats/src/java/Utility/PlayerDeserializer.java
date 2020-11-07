@@ -7,6 +7,7 @@ package Utility;
 
 import Controller.NbaController;
 import Model.Player;
+import Model.PlayerStats;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -42,8 +43,13 @@ public class PlayerDeserializer implements JsonDeserializer<List<Player>>{
             );
             
             NbaController nbaController = new NbaController();
-            p.setPlayerStats(nbaController.getPlayerStats(p.getName()));
-            p.setLastFiveGames(nbaController.getLastFiveGames(p.getPlayerStats()));
+            List<PlayerStats> playerStats = nbaController.getPlayerStats(p.getName());
+            
+            if(playerStats != null){
+                p.setPlayerStats(playerStats);
+                p.setLastFiveGames(nbaController.getLastFiveGames(p.getPlayerStats()));
+            }
+            
             playerList.add(p);
         }
         

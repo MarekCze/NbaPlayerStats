@@ -143,9 +143,4 @@ public class Player {
                 + "\nPost link: " + this.getLink() + "\nPost status: " + this.getStatus();
     }
     
-    public void statsToString(){
-        for(PlayerStats ps : lastFiveGames){
-            System.out.println("Blocks: " + ps.getBlocks() + "\tPoints: " + ps.getPoints() + "\tAssists: " + ps.getAssists() + "\tRebounds: " + ps.getTotReb());
-        }
-    }
 }

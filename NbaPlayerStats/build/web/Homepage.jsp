@@ -40,16 +40,16 @@
             <button class="createPostBtn" value="show">Show</button>
             <button class="createPostBtn" value="hide">Hide</button>
             <form id="createPlayerForm" method="post" action="WordpressController">
-                <label for="playerName">Player name:
+                <label for="playerName">Player name:</label>
                     <br>
                     <input type="text" name="playerName" id="playerName">
                     <br>
-                </label>
-                <label for="playerDescription">Player description:
+                
+                <label for="playerDescription">Player description:</label>
                     <br>
                     <input type="text" name="playerDescription" id="playerDescription">
                     <br>
-                </label>
+                
                 <input type="button" value="createPost" id="createPost">
             </form>
         </div>
@@ -59,16 +59,16 @@
             <button class="updatePostBtn" value="show">Show</button>
             <button class="updatePostBtn" value="hide">Hide</button>
             <form id="updatePlayerForm" method="put" action="WordpressController">
-                <label for="playerId">Player id:
+                <label for="playerId">Player id:</label>
                     <br>
                     <input type="text" name="playerId" id="playerIdUpdate">
                     <br>
-                </label>
-                <label for="playerName">Player name:
+                
+                <label for="playerName">Player name:</label>
                     <br>
                     <input type="text" name="playerName" id="playerName">
                     <br>
-                </label>
+                
                 <label for="playerDescription">Player description:
                     <br>
                     <input type="text" name="playerDescription" id="playerDescription">
@@ -98,21 +98,21 @@
             <button class="createUserBtn" value="show">Show</button>
             <button class="createUserBtn" value="hide">Hide</button>
             <form id="createUserForm" method="post" action="WordpressController">
-                <label for="username"> Username:
+                <label for="username"> Username:</label>
                     <br>
                     <input type="text" name="username" id="username">
                     <br>
-                </label>
-                <label for="password"> Password:
+                
+                <label for="password"> Password:</label>
                     <br>
                     <input type="text" name="password" id="password">
                     <br>
-                </label>
-                <label for="email">User email:
+                
+                <label for="email">User email:</label>
                     <br>
                     <input type="text" name="email" id="email">
                     <br>
-                </label>
+                
                 <input type="button" value="createUser" id="createUser">
             </form>
         </div>
@@ -152,34 +152,39 @@
                                 table.append('<th>Blocks</th>');
                                 table.append('<th>Plus Minus</th>');
                                 
-                              const content = '<h2>' + player.title + '</h2>' + player.content;
+                              const content = '<h2>' + player.title + '</h2>' + '<p>Player id: ' + player.id + '</p>' + player.content;
                               const heading = '<h2>Player stats from the last 5 games (From external API)';
-                              player.lastFiveGames.forEach(function(game){
-                                  console.log('inside player stats for each')
-                                  $('<tr>').append(
-                                    $('<td>').text(game.gameId),
-                                    $('<td>').text(game.points),
-                                    $('<td>').text(game.min),
-                                    $('<td>').text(game.fgm),
-                                    $('<td>').text(game.fga),
-                                    $('<td>').text(game.fgp),
-                                    $('<td>').text(game.ftm),
-                                    $('<td>').text(game.fta),
-                                    $('<td>').text(game.ftp),
-                                    $('<td>').text(game.offRed),
-                                    $('<td>').text(game.defReb),
-                                    $('<td>').text(game.totReb),
-                                    $('<td>').text(game.assists),
-                                    $('<td>').text(game.pFouls),
-                                    $('<td>').text(game.steals),
-                                    $('<td>').text(game.blocks),
-                                    $('<td>').text(game.plusMinus),
-                                  ).appendTo(table);
-                              });
                               
-                              $('#allPosts').append(content);
-                              $('#allPosts').append(heading);
-                              $('#allPosts').append(table);
+                              if(player.lastFiveGames){
+                                  player.lastFiveGames.forEach(function(game){
+                                    console.log('inside player stats for each')
+                                    $('<tr>').append(
+                                      $('<td>').text(game.gameId),
+                                      $('<td>').text(game.points),
+                                      $('<td>').text(game.min),
+                                      $('<td>').text(game.fgm),
+                                      $('<td>').text(game.fga),
+                                      $('<td>').text(game.fgp),
+                                      $('<td>').text(game.ftm),
+                                      $('<td>').text(game.fta),
+                                      $('<td>').text(game.ftp),
+                                      $('<td>').text(game.offRed),
+                                      $('<td>').text(game.defReb),
+                                      $('<td>').text(game.totReb),
+                                      $('<td>').text(game.assists),
+                                      $('<td>').text(game.pFouls),
+                                      $('<td>').text(game.steals),
+                                      $('<td>').text(game.blocks),
+                                      $('<td>').text(game.plusMinus),
+                                    ).appendTo(table);
+                                  });
+                              }
+                              
+                              let playerDiv = $('<div class="player"></div>');
+                              playerDiv.append(content);
+                              playerDiv.append(heading);
+                              playerDiv.append(table);
+                              $('#allPosts').append(playerDiv);
                           });
                       }
                   });

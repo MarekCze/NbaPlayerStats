@@ -30,7 +30,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import Exceptions.PlayerNotFoundException;
 /**
  *
  * @author Owner
@@ -62,9 +62,15 @@ public class NbaController extends HttpServlet {
     public List<PlayerStats> getPlayerStats(String name){
         String playerId = getPlayerByLastName(name);
         System.out.println("PLAYER ID IS ::: " + playerId);
-        List<PlayerStats> playerStats = getPlayerById(playerId);
+        List<PlayerStats> playerStats = new ArrayList();
+        if(playerId != null){
+            playerStats = getPlayerById(playerId);
+            return playerStats;
+        } else {
+            
+        }
         
-        return playerStats;
+        return null;       
     } 
     
     public String getPlayerByLastName(String playerName){
@@ -87,6 +93,11 @@ public class NbaController extends HttpServlet {
             Gson gson = new Gson();
             
             JsonElement json = gson.fromJson(reader, JsonElement.class);
+            System.out.println(json);
+            if(json.getAsJsonObject().get("api").getAsJsonObject().get("results").getAsInt() == 0){
+                throw new PlayerNotFoundException();
+            }
+            
             JsonObject job = json.getAsJsonObject().get("api").getAsJsonObject();
             
             JsonArray ja = json.getAsJsonObject().get("api").getAsJsonObject().get("players").getAsJsonArray();
@@ -101,8 +112,13 @@ public class NbaController extends HttpServlet {
             
             reader.close();
 
+        } catch (PlayerNotFoundException ex) {
+            //ex.printStackTrace();
+            System.out.println(ex.toString() + nameMap.get("lastName"));
+            return null;
+
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             System.out.println("error" + e.toString());
 
         }
@@ -113,6 +129,15 @@ public class NbaController extends HttpServlet {
     public List<PlayerStats> getPlayerById(String playerId){
         List<PlayerStats> playerStats = new ArrayList();
         final String urlString = this.getNbaApiUrl() + "/statistics/players/playerId/" + playerId;
+        
+        try{
+            if(playerId == null){
+            throw new PlayerNotFoundException();
+            } 
+        } catch(PlayerNotFoundException ex){
+            System.out.println("Wrong player ID");
+            return null;
+        }
         
         try {
 
@@ -139,6 +164,7 @@ public class NbaController extends HttpServlet {
             reader.close();
 
         } catch (Exception e) {
+            System.out.println("INSIDE GENERIC EXCEPTION IN GET PLAYER BY ID");
             e.printStackTrace();
             System.out.println("error" + e.toString());
 
